@@ -1,0 +1,12 @@
+{{#if task}}
+    {{task.description}}
+    <form method="POST" action="/{{process}}">
+        <input name="id" type="hidden" value="{{task.id}}"/>
+        <ul>
+            {{#each task.answers}}
+                <li><label><input name="answers" type="checkbox" value="{{this}}"/>{{this}}</label></li>
+            {{/each}}
+        </ul>
+        <button>submit</button>
+    </form>
+{{/if}}

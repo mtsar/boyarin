@@ -17,62 +17,90 @@ app.use(require('morgan')('dev'));
 app.use(require('express-session')(config.session));
 app.use(passport.initialize());
 app.use(passport.session());
-app.engine('hbs', require('express-handlebars')({extname: 'hbs'}));
+app.engine('hbs', require('express-handlebars')({extname: 'hbs', defaultLayout: 'layout'}));
 app.set('view engine', 'hbs');
 
 app.use(function(req, res, next) {
-    res.locals.user = req.user;
     res.locals.config = config;
+    res.locals.user = req.user;
     next();
 });
 
-app.get('/', function(req, res, next) {
+function auth(req, res, next) {
     if (req.user) {
-        request.get(config.processURL + '/workers/' + req.user.worker + '/task', function(err, data, body) {
-            if (data.statusCode === 204) {
-                return res.render('main');
+        next();
+    } else {
+        res.redirect('/auth/login');
+    }
+}
+
+app.get('/', auth, function(req, res, next) {
+    request.get(config.apiURL + '/processes', function(err, data, body) {
+        try {
+            res.render('processes', {
+                processes: JSON.parse(body).filter(function(item) {
+                    return config.processes.indexOf(item.id) !== -1;
+                })
+            });
+        } catch (err) {
+            next(err);
+        }
+    });
+});
+
+app.get('/:process', auth, checkProcess, function(req, res, next) {
+    request.get(config.apiURL + '/processes/' + req.params.process + '/workers/' + req.user.worker + '/task', function(err, data, body) {
+        if (data.statusCode === 204) {
+            return res.render('empty');
+        }
+
+        try {
+            res.render('task', {process: req.params.process, task: JSON.parse(body).task});
+        } catch (err) {
+            next(err);
+        }
+    });
+});
+
+app.post('/:process', auth, checkProcess, function(req, res, next) {
+    request.post(config.apiURL + '/processes/' + req.params.process + '/tasks/' + req.body.id + '/answers', {form: {
+        worker_id: req.user.worker,
+        answers: req.body.answers
+    }}, function(err, data, body) {
+        res.redirect('/' + req.params.process);
+    });
+});
+
+function checkProcess(req, res, next) {
+    if (config.processes.indexOf(req.params.process) === -1) {
+        return res.status(404).end();
+    }
+
+    if (req.user.process !== req.params.process) {
+        findOrCreateWorker(req.params.process, req.user.id, function(err, worker) {
+            if (err) {
+                return next(err);
             }
 
-            console.log('TASK', body);
-
             try {
-                res.render('main', {task: JSON.parse(body).task});
+                req.user.process = req.params.process;
+                req.user.worker = JSON.parse(worker).id;
+                next();
             } catch (err) {
                 next(err);
             }
         });
     } else {
-        res.render('main');
+        next();
     }
-});
+}
 
-app.post('/submit', function(req, res, next) {
-    if (req.user) {
-        request.post(config.processURL + '/tasks/' + req.body.id + '/answers', {form: {
-            worker_id: req.user.worker,
-            answers: req.body.answers
-        }}, function(err, data, body) {
-            res.redirect('/');
-        });
-    }
-});
+function findOrCreateWorker(process, externalID, done) {
+    var processURL = config.apiURL + '/processes/' + process;
 
-// auth
-
-passport.serializeUser(function(user, done) {
-    findOrCreateWorker(user.id, function(err, worker) {
-        try {
-            done(err, {id: user.id, worker: JSON.parse(worker).id});
-        } catch (err) {
-            done(err, null);
-        }
-    });
-});
-
-function findOrCreateWorker(externalID, done) {
-    request.get(config.processURL + '/workers/external?' + qs.stringify({externalId: externalID}), function(err, data, body) {
+    request.get(processURL + '/workers/external?' + qs.stringify({externalId: externalID}), function(err, data, body) {
         if (data.statusCode === 404) {
-            request.post(config.processURL + '/workers', {form: {external_id: externalID}}, function(err, data, body) {
+            request.post(processURL + '/workers', {form: {external_id: externalID}}, function(err, data, body) {
                 done(err, body);
             });
         } else {
@@ -80,6 +108,12 @@ function findOrCreateWorker(externalID, done) {
         }
     });
 }
+
+// auth
+
+passport.serializeUser(function(user, done) {
+    done(null, {id: user.id});
+});
 
 passport.deserializeUser(function(user, done) {
     done(null, user);
@@ -99,6 +133,10 @@ passport.use(new VKStrategy(config.vkontakte, function(accessToken, refreshToken
 app.get('/auth/vk', passport.authenticate('vkontakte'));
 app.get('/auth/vkcallback', passport.authenticate('vkontakte', {successRedirect: '/'}));
 
+app.get('/auth/login', function(req, res, next) {
+    res.render('login');
+});
+
 app.get('/auth/logout', function(req, res, next) {
     req.logout();
     res.redirect('/');
@@ -114,5 +152,6 @@ app.use(function(req, res, next) {
 
 app.use(function(err, req, res, next) {
     res.status(err.status || 500);
+    res.render('error');
     console.log(err);
 });
