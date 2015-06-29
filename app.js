@@ -40,6 +40,8 @@ app.get('/', auth, function(req, res, next) {
             res.render('processes', {
                 processes: JSON.parse(body).filter(function(item) {
                     return config.processes.indexOf(item.id) !== -1;
+                }).sort(function(a, b) {
+                    return config.processes.indexOf(a.id) > config.processes.indexOf(b.id);
                 })
             });
         } catch (err) {
