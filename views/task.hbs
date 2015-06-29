@@ -1,5 +1,6 @@
+<a href="/">К списку заданий</a>
 {{#if task}}
-    {{task.description}}
+    <p>{{task.description}}</p>
     <form method="POST" action="/{{process}}">
         <input name="id" type="hidden" value="{{task.id}}"/>
         <ul>
