@@ -1,7 +1,7 @@
 {
     "port": 8841,
     "apiURL": "http://mtsar.eveel.ru",
-    "processes": ["adv-add", "adv-rm", "adv-verify"],
+    "processes": ["arv-add", "arv-rm", "arv-verify"],
     "session": {
         "saveUninitialized": false,
         "resave": false,
