@@ -52,16 +52,14 @@ app.get('/', auth, function(req, res, next) {
 
 app.get('/:process', auth, checkProcess, function(req, res, next) {
     request.get(config.apiURL + '/processes/' + req.params.process + '/workers/' + req.user.worker + '/task', function(err, data, body) {
-        if (data.statusCode === 204) {
+        if (err) {
+            return next(err);
+        } else if (data.statusCode === 204) {
             return res.render('empty');
         }
 
-        try {
-            res.render('task', {process: req.params.process, task: JSON.parse(body).task});
-        } catch (err) {
-            next(err);
-        }
-    });
+        res.render('task', {process: req.params.process, task: body.task});
+    }).json();
 });
 
 app.post('/:process', auth, checkProcess, function(req, res, next) {
@@ -69,7 +67,6 @@ app.post('/:process', auth, checkProcess, function(req, res, next) {
         worker_id: req.user.worker,
         answers: req.body.answers
     }}, function(err, data, body) {
-        console.log('SUBMITED', this);
         res.redirect('/' + req.params.process);
     });
 });
