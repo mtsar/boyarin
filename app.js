@@ -97,7 +97,11 @@ function findOrCreateWorker(process, externalID, done) {
     request.get(processURL + '/workers/external?' + qs.stringify({externalId: externalID}), function(err, data, body) {
         if (data.statusCode === 404) {
             request.post(processURL + '/workers', {form: {external_id: externalID}}, function(err, data, body) {
-                done(err, body);
+                try {
+                    done(err, JSON.parse(body));
+                } catch (err) {
+                    done(err);
+                }
             });
         } else {
             done(err, body);
