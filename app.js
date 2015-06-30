@@ -36,18 +36,18 @@ function auth(req, res, next) {
 
 app.get('/', auth, function(req, res, next) {
     request.get(config.apiURL + '/processes', function(err, data, body) {
-        try {
-            res.render('processes', {
-                processes: JSON.parse(body).filter(function(item) {
-                    return config.processes.indexOf(item.id) !== -1;
-                }).sort(function(a, b) {
-                    return config.processes.indexOf(a.id) > config.processes.indexOf(b.id);
-                })
-            });
-        } catch (err) {
-            next(err);
+        if (err) {
+            return next(err);
         }
-    });
+
+        res.render('processes', {
+            processes: body.filter(function(item) {
+                return config.processes.indexOf(item.id) !== -1;
+            }).sort(function(a, b) {
+                return config.processes.indexOf(a.id) > config.processes.indexOf(b.id);
+            })
+        });
+    }).json();
 });
 
 app.get('/:process', auth, checkProcess, function(req, res, next) {
@@ -69,6 +69,7 @@ app.post('/:process', auth, checkProcess, function(req, res, next) {
         worker_id: req.user.worker,
         answers: req.body.answers
     }}, function(err, data, body) {
+        console.log('SUBMITED', this);
         res.redirect('/' + req.params.process);
     });
 });
@@ -84,13 +85,9 @@ function checkProcess(req, res, next) {
                 return next(err);
             }
 
-            try {
-                req.user.process = req.params.process;
-                req.user.worker = JSON.parse(worker).id;
-                next();
-            } catch (err) {
-                next(err);
-            }
+            req.user.process = req.params.process;
+            req.user.worker = worker.id;
+            next();
         });
     } else {
         next();
@@ -104,11 +101,11 @@ function findOrCreateWorker(process, externalID, done) {
         if (data.statusCode === 404) {
             request.post(processURL + '/workers', {form: {external_id: externalID}}, function(err, data, body) {
                 done(err, body);
-            });
+            }).json();
         } else {
             done(err, body);
         }
-    });
+    }).json();
 }
 
 // auth
