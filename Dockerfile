@@ -10,4 +10,4 @@ ADD . /boyarin
 
 EXPOSE 8841
 
-CMD ["boyarin-cmd.sh"]
+CMD ["/boyarin/boyarin-cmd.sh"]
