@@ -1,6 +1,6 @@
 FROM node:0.10
 
-RUN mkdir -p /boyarin
+RUN mkdir -p /boyarin /var/log/boyarin
 WORKDIR /boyarin
 
 ADD package.json /boyarin/package.json
@@ -10,4 +10,4 @@ ADD . /boyarin
 
 EXPOSE 8841
 
-CMD ["node", "app.js"]
+CMD ["boyarin-cmd.sh"]
