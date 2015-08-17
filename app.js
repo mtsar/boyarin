@@ -67,7 +67,7 @@ if (!config.disabled) {
                 return res.render('empty');
             }
 
-            inputType = (body.task.type == 'single') ? 'radio' : 'checkbox';
+            var inputType = (body.task.type == 'single') ? 'radio' : 'checkbox';
             res.render('task', {process: req.params.process, allocation: body, inputType: inputType});
         }).json();
     });
