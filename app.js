@@ -34,42 +34,52 @@ function auth(req, res, next) {
     }
 }
 
-app.get('/', auth, function(req, res, next) {
-    request.get(config.apiURL + '/processes', function(err, data, body) {
-        if (err) {
-            return next(err);
-        }
+if (!config.disabled) {
+    app.get('/', auth, function(req, res, next) {
+        request.get(config.apiURL + '/processes', function(err, data, body) {
+            if (err) {
+                return next(err);
+            }
 
-        res.render('processes', {
-            processes: body.filter(function(item) {
-                return config.processes.indexOf(item.id) !== -1;
-            }).sort(function(a, b) {
-                return config.processes.indexOf(a.id) > config.processes.indexOf(b.id);
-            })
-        });
-    }).json();
-});
-
-app.get('/:process', auth, checkProcess, function(req, res, next) {
-    request.get(config.apiURL + '/processes/' + req.params.process + '/workers/' + req.user.worker + '/task', function(err, data, body) {
-        if (err) {
-            return next(err);
-        } else if (data.statusCode === 204) {
-            return res.render('empty');
-        }
-
-        res.render('task', {process: req.params.process, task: body.task});
-    }).json();
-});
-
-app.post('/:process', auth, checkProcess, function(req, res, next) {
-    request.post(config.apiURL + '/processes/' + req.params.process + '/tasks/' + req.body.id + '/answers', {form: {
-        worker_id: req.user.worker,
-        answers: req.body.answers
-    }}, function(err, data, body) {
-        res.redirect('/' + req.params.process);
+            res.render('processes', {
+                processes: body.filter(function(item) {
+                    return config.processes.indexOf(item.id) !== -1;
+                }).sort(function(a, b) {
+                    return config.processes.indexOf(a.id) > config.processes.indexOf(b.id);
+                })
+            });
+        }).json();
     });
-});
+
+    app.get('/:process', auth, checkProcess, function(req, res, next) {
+        request.get(config.apiURL + '/processes/' + req.params.process + '/workers/' + req.user.worker + '/task', function(err, data, body) {
+            if (err) {
+                return next(err);
+            } else if (data.statusCode === 204) {
+                return res.render('empty');
+            }
+
+            res.render('task', {process: req.params.process, task: body.task});
+        }).json();
+    });
+
+    app.post('/:process', auth, checkProcess, function(req, res, next) {
+        request.post(config.apiURL + '/processes/' + req.params.process + '/tasks/' + req.body.id + '/answers', {form: {
+            worker_id: req.user.worker,
+            answers: req.body.answers
+        }}, function(err, data, body) {
+            res.redirect('/' + req.params.process);
+        });
+    });
+
+    app.get('/auth/login', function(req, res, next) {
+        res.render('login');
+    });
+} else {
+    app.get('/', function(req, res, next) {
+        res.render('disabled');
+    });
+}
 
 function checkProcess(req, res, next) {
     if (config.processes.indexOf(req.params.process) === -1) {
@@ -132,10 +142,6 @@ passport.use(new VKStrategy(config.vkontakte, function(accessToken, refreshToken
 
 app.get('/auth/vk', passport.authenticate('vkontakte'));
 app.get('/auth/vkcallback', passport.authenticate('vkontakte', {successRedirect: '/'}));
-
-app.get('/auth/login', function(req, res, next) {
-    res.render('login');
-});
 
 app.get('/auth/logout', function(req, res, next) {
     req.logout();
