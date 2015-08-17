@@ -43,13 +43,19 @@ if (!config.disabled) {
                 return next(err);
             }
 
-            res.render('processes', {
-                processes: body.filter(function(item) {
+            var processes;
+
+            if (config.processes) {
+                processes = body.filter(function(item) {
                     return config.processes.indexOf(item.id) !== -1;
                 }).sort(function(a, b) {
                     return config.processes.indexOf(a.id) > config.processes.indexOf(b.id);
-                })
-            });
+                });
+            } else {
+                processes = body;
+            }
+
+            res.render('processes', {processes: processes});
         }).json();
     });
 
