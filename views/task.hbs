@@ -1,14 +1,14 @@
 <a href="/">К списку заданий</a>
-{{#if task}}
-    <p>{{task.description}}</p>
+{{#if allocation.task}}
+    <p>{{allocation.task.description}}</p>
     <form method="POST" action="/{{process}}">
-        <input name="id" type="hidden" value="{{task.id}}"/>
+        <input name="id" type="hidden" value="{{allocation.task.id}}"/>
         <ul>
-            {{#each task.answers}}
-                <li><label><input name="answers" type="checkbox" value="{{this}}"/>{{this}}</label></li>
+            {{#each allocation.task.answers}}
+                <li><label><input name="answers" type="{{../inputType}}" value="{{this}}"/>{{this}}</label></li>
             {{/each}}
         </ul>
         <button>submit</button>
     </form>
-    <p>Осталось не более {{left}} заданий из {{count}}.</p>
+    <p>Осталось не более {{allocation.taskRemaining}} заданий из {{allocation.taskCount}}.</p>
 {{/if}}
