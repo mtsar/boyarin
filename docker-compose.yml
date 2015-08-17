@@ -1,0 +1,7 @@
+app:
+  build: .
+  volumes:
+    - log/:/var/log/boyarin
+  ports:
+    - "8800:8841"
+  restart: always
