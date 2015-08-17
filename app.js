@@ -59,7 +59,7 @@ if (!config.disabled) {
                 return res.render('empty');
             }
 
-            res.render('task', {process: req.params.process, task: body.task});
+            res.render('task', {process: req.params.process, task: body.task, left: body.taskRemaining, count: body.taskCount});
         }).json();
     });
 
@@ -101,12 +101,12 @@ function checkProcess(req, res, next) {
     }
 }
 
-function findOrCreateWorker(process, externalID, done) {
+function findOrCreateWorker(process, tag, done) {
     var processURL = config.apiURL + '/processes/' + process;
 
-    request.get(processURL + '/workers/external?' + qs.stringify({externalId: externalID}), function(err, data, body) {
+    request.get(processURL + '/workers/tagged/' + encodeURIComponent(tag), function(err, data, body) {
         if (data.statusCode === 404) {
-            request.post(processURL + '/workers', {form: {external_id: externalID}}, function(err, data, body) {
+            request.post(processURL + '/workers', {form: {tag: tag}}, function(err, data, body) {
                 try {
                     done(err, JSON.parse(body));
                 } catch (err) {
