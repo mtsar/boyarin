@@ -108,7 +108,7 @@ function findOrCreateWorker(process, tag, done) {
 
     request.get(processURL + '/workers/tagged/' + encodeURIComponent(tag), function(err, data, body) {
         if (data.statusCode === 404) {
-            request.post(processURL + '/workers', {form: {tag: tag}}, function(err, data, body) {
+            request.post(processURL + '/workers', {form: {tags: tag}}, function(err, data, body) {
                 try {
                     done(err, JSON.parse(body));
                 } catch (err) {
