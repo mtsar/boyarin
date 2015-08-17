@@ -1,13 +1,14 @@
 <!doctype html>
+<html>
 <head>
-    <meta charset="utf-8"/>
+    <meta charset="utf-8" />
     <title>Boyarin</title>
 </head>
 <body>
-    <div>
-        {{#if user}}
-            <a href="/auth/logout">logout</a>
-        {{/if}}
-    </div>
-    {{{body}}}
+
+{{#if user}}<div><a href="/auth/logout">logout</a></div>{{/if}}
+
+{{{body}}}
+
 </body>
+</html>
