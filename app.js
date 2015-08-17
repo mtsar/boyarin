@@ -26,6 +26,8 @@ app.use(function(req, res, next) {
     next();
 });
 
+if (process.env.MTSAR_API_URL) config.apiURL = process.env.MTSAR_API_URL;
+
 function auth(req, res, next) {
     if (req.user) {
         next();
