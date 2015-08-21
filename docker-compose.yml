@@ -2,6 +2,10 @@ app:
   build: .
   volumes:
     - log/:/var/log/boyarin
+  environment:
+    - MTSAR_API_URL=http://mtsar:8080
+  external_links:
+    - "mtsar_app_1:mtsar"
   ports:
     - "8800:8841"
   restart: always
