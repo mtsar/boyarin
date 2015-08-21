@@ -91,7 +91,7 @@ if (!config.disabled) {
 }
 
 function checkProcess(req, res, next) {
-    if (config.processes.indexOf(req.params.process) === -1) {
+    if (config.processes && config.processes.indexOf(req.params.process) === -1) {
         return res.status(404).end();
     }
 
