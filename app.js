@@ -39,6 +39,10 @@ function auth(req, res, next) {
     }
 }
 
+app.get('/about', function(req, res, next) {
+    res.render('about');
+});
+
 if (!config.disabled) {
     app.get('/', auth, function(req, res, next) {
         request.get(config.apiURL + '/processes', function(err, data, body) {
