@@ -1,4 +1,5 @@
 var express = require('express'),
+    favicon = require('serve-favicon'),
     request = require('request'),
     config = require('./config.json');
     passport = require('passport'),
@@ -12,6 +13,7 @@ var app = express();
 app.listen(process.env.PORT || config.port);
 
 app.use(bodyParser.urlencoded({extended: false}));
+app.use(favicon(__dirname + '/favicon.ico'));
 app.use(express.static('./public'));
 app.use(require('morgan')('dev'));
 app.use(require('express-session')(config.session));

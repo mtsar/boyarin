@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "thug life",
   "main": "app.js",
+  "repository": "dustalov/boyarin",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -13,6 +14,7 @@
     "express": "^4.13.0",
     "express-handlebars": "^2.0.1",
     "express-session": "^1.11.3",
+    "serve-favicon": "^2.3.0",
     "morgan": "^1.6.0",
     "passport": "^0.2.2",
     "passport-facebook": "^2.0.0",
