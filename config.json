@@ -1,4 +1,5 @@
 {
+    "disabled": false,
     "port": 8841,
     "apiURL": "http://mtsar.eveel.ru",
     "processes": ["arv-add", "arv-rm", "arv-verify"],
