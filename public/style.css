@@ -1,0 +1,45 @@
+#content {
+  margin: 0 auto;
+  max-width: 960px;
+  color: #222;
+}
+
+.task {
+  max-width: 80%;
+  margin: 0 auto;
+}
+
+.task .description {
+  font-family: serif;
+  line-height: 1.5;
+}
+
+.logout {
+  float: right;
+}
+
+.color-facebook {
+  background-color: #3b5998;
+  color: #ffffff;
+}
+
+.color-vk {
+  background-color: #5b7fa6;
+  color: #ffffff;
+}
+
+.width-max {
+  width: 100%;
+}
+
+.align-center {
+  text-align: center;
+}
+
+.button-xsmall {
+  font-size: 70%;
+}
+
+.hint {
+  font-style: italic;
+}

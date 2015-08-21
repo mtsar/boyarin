@@ -1,7 +1,26 @@
-<ul>
-    {{#each processes}}
-        <li>
-            <a href="/{{id}}">{{id}}</a><span>{{description}}</span>
-        </li>
-    {{/each}}
-</ul>
+<h2>Процессы разметки</h2>
+
+<div class="pure-g">
+  <div class="pure-u-1">
+    <table class="pure-table pure-table-striped width-max">
+      <thead>
+        <tr>
+          <th style="width: 20%">Процесс</th>
+          <th style="width: 60%">Описание</th>
+          <th style="width: 10%" class="align-center">Действия</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each processes}}
+          <tr>
+            <td>{{id}}</td>
+            <td>{{{descriptionHTML}}}</td>
+            <td class="align-center"><a class="button-xsmall pure-button pure-button-primary" href="/{{id}}">Приступить</a></td>
+          </tr>
+        {{else}}
+          <tr><td colspan="3"><i class="fa fa-info"></i>&nbsp; Нет доступных заданий.</td></tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+</div>

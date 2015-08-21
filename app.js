@@ -4,6 +4,7 @@ var express = require('express'),
     config = require('./config.json');
     passport = require('passport'),
     bodyParser = require('body-parser'),
+    marked = require('marked'),
     FBStrategy = require('passport-facebook'),
     VKStrategy = require('passport-vkontakte').Strategy,
     qs = require('querystring');
@@ -14,7 +15,7 @@ app.listen(process.env.PORT || config.port);
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(favicon(__dirname + '/favicon.ico'));
-app.use(express.static('./public'));
+app.use(express.static(__dirname + '/public'));
 app.use(require('morgan')('dev'));
 app.use(require('express-session')(config.session));
 app.use(passport.initialize());
@@ -57,6 +58,10 @@ if (!config.disabled) {
                 processes = body;
             }
 
+            processes.forEach(function(item) {
+                item.descriptionHTML = marked(item.description);
+            });
+
             res.render('processes', {processes: processes});
         }).json();
     });
@@ -70,6 +75,7 @@ if (!config.disabled) {
             }
 
             var inputType = (body.task.type == 'single') ? 'radio' : 'checkbox';
+            body.task.descriptionHTML = marked(body.task.description);
             res.render('task', {process: req.params.process, allocation: body, inputType: inputType});
         }).json();
     });
