@@ -4,8 +4,10 @@ app:
     - log/:/var/log/boyarin
   environment:
     - MTSAR_API_URL=http://mtsar:8080
+    - SENTRY_DSN=http://eba94707c18e42e89bb98881c8b7f195:47eef378682847e885729fbf91ad90ae@sentry:9000/4
   external_links:
     - "mtsar_app_1:mtsar"
+    - "sentry_app_1:sentry"
   ports:
     - "8800:8841"
   restart: always
