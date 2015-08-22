@@ -7,12 +7,14 @@ var express = require('express'),
     marked = require('marked'),
     FBStrategy = require('passport-facebook'),
     VKStrategy = require('passport-vkontakte').Strategy,
-    qs = require('querystring');
+    qs = require('querystring'),
+    raven = require('raven');
 
 var app = express();
 
 app.listen(process.env.PORT || config.port);
 
+app.use(raven.middleware.express.requestHandler(process.env.SENTRY_DSN));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(favicon(__dirname + '/favicon.ico'));
 app.use(express.static(__dirname + '/public'));
@@ -89,7 +91,6 @@ if (!config.disabled) {
             worker_id: req.user.worker,
             answers: req.body.answers
         }}, function(err, data, body) {
-            debugger;
             var errors = localizeValidationErrors(JSON.parse(body).errors);
             if (errors.length > 0) {
                 request.get(config.apiURL + '/processes/' + req.params.process + '/workers/' + req.user.worker + '/task/' + req.body.id, function(err, data, body) {
@@ -206,6 +207,8 @@ app.use(function(req, res, next) {
 });
 
 // handle errors
+
+app.use(raven.middleware.express.errorHandler(process.env.SENTRY_DSN));
 
 app.use(function(err, req, res, next) {
     res.status(err.status || 500);
