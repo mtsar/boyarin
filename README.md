@@ -8,7 +8,7 @@ Boyarin [bɐˈjarʲɪn̪] is a front-end for the [Mechanical Tsar] crowdsourcing
 
 If you publish work that uses Mechanical Tsar or Boyarin, please cite it as follows.
 
-* Ustalov, D.: [A Crowdsourcing Engine for Mechanized Labor](http://www.ispras.ru/en/proceedings/isp_27_2015_3/isp_27_2015_3_351/). Proceedings of the Institute for System Programming, Vol. 27(3), 351–364 (2015)
+* Ustalov, D.: [A Crowdsourcing Engine for Mechanized Labor](http://dx.doi.org/10.15514/ISPRAS-2015-27%283%29-25). Proceedings of the Institute for System Programming, Vol. 27(3), 351–364 (2015)
 
 ```latex
 @article{Ustalov:15:ispras,
