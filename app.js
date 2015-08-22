@@ -163,7 +163,7 @@ function localizeValidationErrors(errors) {
             case "task-single-no-answer":
                 return "Необходимо выбрать один из ответов.";
             case "answer-duplicate":
-                return "В системе уже зарегистрирован ваш ответ на это задание.";
+                return null;
             default:
                 return null;
         }
