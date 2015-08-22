@@ -157,17 +157,17 @@ function findOrCreateWorker(process, tag, done) {
 }
 
 function localizeValidationErrors(errors) {
-    if (errors == null) return [];
-
-    var ids = errors.map(function(e) { return (e.match(/^#(.+?):/) || [])[1]; }).
-        filter(function(e) { return !!e; });
-
-    return ids.map(function(id) { switch(id) {
-        case "task-single-no-answer":
-            return "Необходимо выбрать один из ответов.";
-        case "answer-duplicate":
-            return "В системе уже зарегистрирован ваш ответ на это задание.";
-    }});
+    return (errors || []).map(function(error) {
+        var id = (error.match(/^#(.+?):/) || [])[1];
+        switch (id) {
+            case "task-single-no-answer":
+                return "Необходимо выбрать один из ответов.";
+            case "answer-duplicate":
+                return "В системе уже зарегистрирован ваш ответ на это задание.";
+            default:
+                return null;
+        }
+    }).filter(function(e) { return !!e; });
 }
 
 // auth
