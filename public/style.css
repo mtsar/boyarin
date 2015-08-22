@@ -43,3 +43,7 @@
 .hint {
   font-style: italic;
 }
+
+.errors {
+  color: #ff0000;
+}

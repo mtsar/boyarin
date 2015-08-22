@@ -89,7 +89,23 @@ if (!config.disabled) {
             worker_id: req.user.worker,
             answers: req.body.answers
         }}, function(err, data, body) {
-            res.redirect('/' + req.params.process);
+            debugger;
+            var errors = localizeValidationErrors(JSON.parse(body).errors);
+            if (errors.length > 0) {
+                request.get(config.apiURL + '/processes/' + req.params.process + '/workers/' + req.user.worker + '/task/' + req.body.id, function(err, data, body) {
+                    if (err) {
+                        return next(err);
+                    } else if (data.statusCode === 204) {
+                        return res.render('empty');
+                    }
+
+                    var inputType = (body.task.type == 'single') ? 'radio' : 'checkbox';
+                    body.task.descriptionHTML = marked(body.task.description);
+                    res.render('task', {process: req.params.process, allocation: body, inputType: inputType, errors: errors});
+                }).json();
+            } else {
+                res.redirect('/' + req.params.process);
+            }
         });
     });
 
@@ -138,6 +154,20 @@ function findOrCreateWorker(process, tag, done) {
             done(err, body);
         }
     }).json();
+}
+
+function localizeValidationErrors(errors) {
+    if (errors == null) return [];
+
+    var ids = errors.map(function(e) { return (e.match(/^#(.+?):/) || [])[1]; }).
+        filter(function(e) { return !!e; });
+
+    return ids.map(function(id) { switch(id) {
+        case "task-single-no-answer":
+            return "Необходимо выбрать один из ответов.";
+        case "answer-duplicate":
+            return "В системе уже зарегистрирован ваш ответ на это задание.";
+    }});
 }
 
 // auth
