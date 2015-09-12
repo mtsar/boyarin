@@ -47,62 +47,79 @@ app.get('/about', function(req, res, next) {
 
 if (!config.disabled) {
     app.get('/', auth, function(req, res, next) {
-        request.get(config.apiURL + '/processes', function(err, data, body) {
-            if (err) {
-                return next(err);
-            }
-
-            var processes;
-
-            if (config.processes) {
-                processes = body.filter(function(item) {
-                    return config.processes.indexOf(item.id) !== -1;
-                }).sort(function(a, b) {
-                    return config.processes.indexOf(a.id) > config.processes.indexOf(b.id);
-                });
-            } else {
-                processes = body;
-            }
-
-            processes.forEach(function(item) {
-                item.descriptionHTML = marked(item.description);
-            });
-
+        processes = null;
+        getProcesses(function(err, processes) {
+            if (err) return next(err);
             res.render('processes', {processes: processes});
-        }).json();
+        });
     });
 
     app.get('/:process', auth, checkProcess, function(req, res, next) {
-        request.get(config.apiURL + '/processes/' + req.params.process + '/workers/' + req.user.worker + '/task', function(err, data, body) {
-            if (err) {
-                return next(err);
-            } else if (data.statusCode === 204) {
-                return res.render('empty');
+        getProcesses(function(err, processes) {
+            if (err) return next(err);
+
+            var process = processes.filter(function(p) { return p.id == req.params.process; })[0];
+            var tasksPerPage = process.options.tasksPerPage || 1;
+
+            var tasksURL;
+            if (tasksPerPage > 1) {
+                tasksURL = config.apiURL + '/processes/' + req.params.process + '/workers/' + req.user.worker + '/tasks/' + tasksPerPage;
+            } else {
+                tasksURL = config.apiURL + '/processes/' + req.params.process + '/workers/' + req.user.worker + '/task';
             }
 
-            var inputType = (body.task.type == 'single') ? 'radio' : 'checkbox';
-            body.task.descriptionHTML = marked(body.task.description);
-            res.render('task', {process: req.params.process, allocation: body, inputType: inputType});
-        }).json();
+            request.get(tasksURL, function(err, data, body) {
+                if (err) {
+                    return next(err);
+                } else if (data.statusCode === 204) {
+                    return res.render('empty');
+                }
+
+                body.tasks.forEach(function(task) {
+                    task.descriptionHTML = marked(task.description);
+                    task.inputType = (task.type == 'single') ? 'radio' : 'checkbox';
+                    task.answers = task.answers.map(answer => {
+                        return {value: answer};
+                    });
+                });
+
+                res.render('task', {process: process, allocation: body});
+            }).json();
+        });
     });
 
     app.post('/:process', auth, checkProcess, function(req, res, next) {
-        request.post(config.apiURL + '/processes/' + req.params.process + '/tasks/' + req.body.id + '/answers', {form: {
-            worker_id: req.user.worker,
-            answers: req.body.answers
+        var tasks = (Array.isArray(req.body.task)) ? req.body.task: [req.body.task];
+
+        var answers = {};
+        tasks.forEach(function(task) {
+            var key = "answers[" + task + "]";
+            answers[task] = req.body[key] ? (Array.isArray(req.body[key]) ? req.body[key] : [req.body[key]]) : null;
+        });
+
+        request.patch(`${config.apiURL}/processes/${req.params.process}/workers/${req.user.worker}/answers`, {form: {
+            answers: answers
         }}, function(err, data, body) {
             var errors = localizeValidationErrors(JSON.parse(body).errors);
             if (errors.length > 0) {
-                request.get(config.apiURL + '/processes/' + req.params.process + '/workers/' + req.user.worker + '/task/' + req.body.id, function(err, data, body) {
+                var process = {id: req.params.process};
+                var query = qs.stringify({task_id: tasks});
+                request.get(`${config.apiURL}/processes/${req.params.process}/workers/${req.user.worker}/tasks?${query}`, function(err, data, body) {
                     if (err) {
                         return next(err);
                     } else if (data.statusCode === 204) {
                         return res.render('empty');
                     }
 
-                    var inputType = (body.task.type == 'single') ? 'radio' : 'checkbox';
-                    body.task.descriptionHTML = marked(body.task.description);
-                    res.render('task', {process: req.params.process, allocation: body, inputType: inputType, errors: errors});
+                    body.tasks.forEach(function(task) {
+                        task.descriptionHTML = marked(task.description);
+                        task.inputType = (task.type == 'single') ? 'radio' : 'checkbox';
+                        task.answers = task.answers.map(answer => {
+                            return {value: answer, checked: (answers[task.id.toString()] || []).indexOf(answer) !== -1};
+                        });
+                    });
+
+                    res.render('task', {process: process, allocation: body, errors: errors});
                 }).json();
             } else {
                 res.redirect('/' + req.params.process);
@@ -116,6 +133,33 @@ if (!config.disabled) {
 } else {
     app.get('/', function(req, res, next) {
         res.render('disabled');
+    });
+}
+
+var processes;
+
+function getProcesses(next) {
+    if (!!processes) return next(null, processes);
+    request.get(config.apiURL + '/processes', function(err, data, body) {
+        if (err) {
+            return next(err);
+        }
+
+        if (config.processes) {
+            processes = JSON.parse(body).filter(function(item) {
+                return config.processes.indexOf(item.id) !== -1;
+            }).sort(function(a, b) {
+                return config.processes.indexOf(a.id) > config.processes.indexOf(b.id);
+            });
+        } else {
+            processes = JSON.parse(body);
+        }
+
+        processes.forEach(function(item) {
+            item.descriptionHTML = marked(item.description);
+        });
+
+        next(null, processes);
     });
 }
 
@@ -163,6 +207,8 @@ function localizeValidationErrors(errors) {
         switch (id) {
             case "task-single-no-answer":
                 return "Необходимо выбрать один из ответов.";
+            case "answer-not-in-task":
+                return "Указан неверный вариант ответа.";
             case "answer-duplicate":
                 return null;
             default:
