@@ -21,7 +21,7 @@
     "passport-facebook": "^2.0.0",
     "passport-vkontakte": "^0.4.0",
     "request": "^2.58.0",
-    "ipware": "^0.0.7",
+    "request-ip": "^1.1.4",
     "raven": "^0.8.1"
   }
 }

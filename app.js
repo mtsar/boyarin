@@ -8,7 +8,7 @@ var express = require('express'),
     FBStrategy = require('passport-facebook'),
     VKStrategy = require('passport-vkontakte').Strategy,
     qs = require('querystring'),
-    get_ip = require('ipware')().get_ip,
+    requestIp = require('request-ip'),
     raven = require('raven');
 
 var app = express();
@@ -43,7 +43,7 @@ function auth(req, res, next) {
                 res.redirect('/auth/login');
                 break;
             default:
-                var ip = get_ip(req, true).clientIp;
+                var ip = requestIp.getClientIp(req);
                 req.user = {id: `ip${ip}`};
                 next();
                 break;
