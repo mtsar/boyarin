@@ -116,7 +116,8 @@ if (!config.disabled) {
         });
 
         request.patch(`${config.apiURL}/processes/${req.params.process}/workers/${req.user.worker}/answers`, {form: {
-            answers: answers
+            answers: answers,
+            tags: `tasks${tasks.join('_')}`
         }}, function(err, data, body) {
             var errors = localizeValidationErrors(JSON.parse(body).errors);
             if (errors.length > 0) {
