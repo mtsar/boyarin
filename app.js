@@ -9,6 +9,7 @@ var express = require('express'),
     VKStrategy = require('passport-vkontakte').Strategy,
     qs = require('querystring'),
     requestIp = require('request-ip'),
+    UAParser = require('ua-parser-js'),
     raven = require('raven');
 
 var app = express();
@@ -44,7 +45,10 @@ function auth(req, res, next) {
                 break;
             default:
                 var ip = requestIp.getClientIp(req);
-                req.user = {id: `ip${ip}`};
+                var parser = new UAParser();
+                var ua = req.headers['user-agent'];
+                var browserName = parser.setUA(ua).getBrowser().name;
+                req.user = {id: `ip${ip}_${browserName}`};
                 next();
                 break;
         }
