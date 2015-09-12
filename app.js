@@ -46,9 +46,9 @@ function auth(req, res, next) {
             default:
                 var ip = requestIp.getClientIp(req);
                 var parser = new UAParser();
-                var ua = req.headers['user-agent'];
-                var browserName = parser.setUA(ua).getBrowser().name;
-                req.user = {id: `ip${ip}_${browserName}`};
+                var browser = parser.setUA(req.headers['user-agent']).getBrowser();
+                var browserVersion = Number(browser.version.split(".", 1).toString());
+                req.user = {id: `ip${ip}_${browser.name}.${browserVersion}`};
                 next();
                 break;
         }
