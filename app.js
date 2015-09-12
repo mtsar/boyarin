@@ -237,24 +237,26 @@ passport.deserializeUser(function(user, done) {
     done(null, user);
 });
 
-passport.use(new FBStrategy(config.facebook, function(accessToken, refreshToken, profile, done) {
-    done(null, {id: 'facebook' + profile.id});
-}));
+if (config.auth == 'social') {
+    passport.use(new FBStrategy(config.facebook, function(accessToken, refreshToken, profile, done) {
+        done(null, {id: 'facebook' + profile.id});
+    }));
 
-app.get('/auth/fb', passport.authenticate('facebook'));
-app.get('/auth/fbcallback', passport.authenticate('facebook', {successRedirect: '/'}));
+    app.get('/auth/fb', passport.authenticate('facebook'));
+    app.get('/auth/fbcallback', passport.authenticate('facebook', {successRedirect: '/'}));
 
-passport.use(new VKStrategy(config.vkontakte, function(accessToken, refreshToken, profile, done) {
-    done(null, {id: 'vkontakte' + profile.id});
-}));
+    passport.use(new VKStrategy(config.vkontakte, function(accessToken, refreshToken, profile, done) {
+        done(null, {id: 'vkontakte' + profile.id});
+    }));
 
-app.get('/auth/vk', passport.authenticate('vkontakte'));
-app.get('/auth/vkcallback', passport.authenticate('vkontakte', {successRedirect: '/'}));
+    app.get('/auth/vk', passport.authenticate('vkontakte'));
+    app.get('/auth/vkcallback', passport.authenticate('vkontakte', {successRedirect: '/'}));
 
-app.get('/auth/logout', function(req, res, next) {
-    req.logout();
-    res.redirect('/');
-});
+    app.get('/auth/logout', function(req, res, next) {
+        req.logout();
+        res.redirect('/');
+    });
+}
 
 // handle 404
 
