@@ -89,15 +89,19 @@ if (!config.disabled) {
                     return res.render('empty');
                 }
 
-                body.tasks.forEach(function(task) {
-                    task.descriptionHTML = marked(task.description);
-                    task.inputType = (task.type == 'single') ? 'radio' : 'checkbox';
-                    task.answers = task.answers.map(answer => {
-                        return {value: answer};
+                if (!!body.tasks) {
+                    body.tasks.forEach(function(task) {
+                        task.descriptionHTML = marked(task.description);
+                        task.inputType = (task.type == 'single') ? 'radio' : 'checkbox';
+                        task.answers = task.answers.map(answer => {
+                            return {value: answer};
+                        });
                     });
-                });
 
-                res.render('task', {process: process, allocation: body});
+                    res.render('task', {process: process, allocation: body});
+                } else {
+                    res.render('empty');
+                }
             }).json();
         });
     });
