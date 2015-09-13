@@ -91,6 +91,7 @@ if (!config.disabled) {
 
                 if (!!body.tasks) {
                     body.tasks.forEach(function(task) {
+                        if (process.id == 'russe') task.description = task.tags.map(t => `[*${t}*](https://ru.wiktionary.org/w/index.php?search=${t}#.D0.A0.D1.83.D1.81.D1.81.D0.BA.D0.B8.D0.B9)`).join(' и ');
                         task.descriptionHTML = marked(task.description);
                         task.inputType = (task.type == 'single') ? 'radio' : 'checkbox';
                         task.answers = task.answers.map(answer => {
@@ -98,7 +99,7 @@ if (!config.disabled) {
                         });
                     });
 
-                    res.render('task', {process: process, allocation: body});
+                    res.render(process.id == 'russe' ? 'russe' : 'task', {process: process, allocation: body});
                 } else {
                     res.render('empty');
                 }
@@ -131,6 +132,7 @@ if (!config.disabled) {
                     }
 
                     body.tasks.forEach(function(task) {
+                        if (process.id == 'russe') task.description = task.tags.map(t => `[*${t}*](https://ru.wiktionary.org/w/index.php?search=${t}#.D0.A0.D1.83.D1.81.D1.81.D0.BA.D0.B8.D0.B9)`).join(' и ');
                         task.descriptionHTML = marked(task.description);
                         task.inputType = (task.type == 'single') ? 'radio' : 'checkbox';
                         task.answers = task.answers.map(answer => {
@@ -138,7 +140,7 @@ if (!config.disabled) {
                         });
                     });
 
-                    res.render('task', {process: process, allocation: body, errors: errors});
+                    res.render(process.id == 'russe' ? 'russe' : 'task', {process: process, allocation: body, errors: errors});
                 }).json();
             } else {
                 res.redirect('/' + req.params.process);
