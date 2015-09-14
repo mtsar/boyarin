@@ -10,7 +10,6 @@
 }
 
 .task .description {
-  font-family: serif;
   line-height: 1.5;
 }
 
@@ -32,18 +31,27 @@
   width: 100%;
 }
 
+.align-left {
+  text-align: left;
+}
+
 .align-center {
   text-align: center;
+}
+
+.align-right {
+  text-align: right;
 }
 
 .button-xsmall {
   font-size: 70%;
 }
 
-.hint {
-  font-style: italic;
-}
-
 .errors {
   color: #ff0000;
+}
+
+.hint {
+  line-height: 1.5;
+  hyphens: auto;
 }

@@ -5,30 +5,10 @@
   color: #07485B;
 }
 
-.task {
-  padding-bottom: 0.5em;
-}
-
-.task:nth-child(even) {
-  background-color: #F9F9F9;
-}
-
-.task:nth-child(odd) {
-  background-color: #FDFDFD;
-}
-
-@media screen and (min-width: 48em) {
-  .task:hover {
-    background-color: #E6E6E6;
-  }
-
-  .task:nth-child(1), .task:nth-child(4), .task:nth-child(5) {
-    background-color: #F9F9F9;
-  }
-
-  .task:nth-child(2), .task:nth-child(3), .task:nth-child(6) {
-    background-color: #FDFDFD;
-  }
+.russe-score-label {
+  display: block;
+  margin-top: -.35em;
+  font-size: 85%;
 }
 
 .submission {
@@ -36,33 +16,44 @@
 }
 </style>
 
-<p>Перед вами представлены пары слов. Пожалуйста, выберите &laquo;Да&raquo;, если слова в паре связаны. В противном случае выберите &laquo;Нет&raquo;.</p>
+<p class="hint">Перед вами представлены пары слов. Пожалуйста, выберите &laquo;связаны&raquo;, если <strong>слова в паре связаны по смыслу</strong>. В противном случае выберите &laquo;не связаны&raquo;.</p>
+
+<datalist id="answers">
+  <option value="0">0</option>
+  <option value="1">1</option>
+</datalist>
 
 <div class="pure-g">
 <div class="pure-u-1">
 <form class="pure-form pure-form-stacked" method="POST" action="/{{process.id}}">
   <fieldset>
-    <div class="pure-g">
-      {{#each allocation.tasks}}
-        <div class="task pure-u-1 pure-u-md-1-2 align-center">
-          <input name="task" type="hidden" value="{{id}}"/>
-
-          <div class="description">
-            {{{descriptionHTML}}}
-          </div>
-
-          <div class="pure-g">
-            {{#each answers}}
-              <div class="pure-u-1-2">
-                <label class="pure-{{../inputType}}">
-                    <input type="{{../inputType}}" name="answers[{{../id}}]" value="{{value}}"{{#if checked}} checked{{/if}}>
-                    {{value}}
-                </label>
-              </div>
-            {{/each}}
-          </div>
-        </div>
-      {{/each}}
+    <input type="hidden" name="token" value="{{token}}"/>
+    <div class="pure-g task">
+      <div class="pure-u-1">
+        <table class="pure-table pure-table-striped width-max">
+          <thead>
+          <tr>
+              <th class="align-center" style="width: 50%">Слова</th>
+              <th class="align-center" style="width: 50%">Ваш ответ</th>
+          </tr>
+          </thead>
+          <tbody>
+          {{#each allocation.tasks}}
+            <tr class="align-center">
+                <td>{{{descriptionHTML}}}</td>
+                <td>
+                  <input name="task" type="hidden" value="{{id}}"/>
+                  <input class="width-max" type="range" list="answers" min="0" max="1" value="{{answer}}" name="answers[{{id}}]">
+                  <div class="russe-score-label pure-g">
+                    <div class="pure-u-1-2 align-left">не связаны</div>
+                    <div class="pure-u-1-2 align-right">связаны</div>
+                  </div>
+                </td>
+            </tr>
+          {{/each}}
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <div class="pure-g submission">
@@ -75,17 +66,15 @@
         </ul>
       </div>
       {{/if}}
-      <div class="pure-u-1 pure-u-md-2-3">
+      <div class="pure-u-2-3">
         <p class="hint">Осталось не более {{allocation.taskRemaining}} заданий из {{allocation.taskCount}}.</p>
       </div>
-      <div class="pure-u-1 pure-u-md-1-3">
+      <div class="pure-u-1-3 align-right">
         <button type="submit" class="pure-button pure-button-primary">Отправить <i class="fa fa-arrow-right"></i></button>
       </div>
     </div>
   </fieldset>
 </form>
-
-<p>Если задание показалось сложным, то кнопка <a class="pure-button" href="/{{process.id}}"><i class="fa fa-repeat"></i> Повторить</a> может помочь.</p>
 
 <p>К <a href="/">списку процессов разметки</a> можно вернуться в любой момент.</p>
 </div>

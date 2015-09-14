@@ -4,6 +4,7 @@ var express = require('express'),
     config = require('./config.json');
     passport = require('passport'),
     bodyParser = require('body-parser'),
+    crypto = require('crypto'),
     marked = require('marked'),
     FBStrategy = require('passport-facebook'),
     VKStrategy = require('passport-vkontakte').Strategy,
@@ -90,16 +91,19 @@ if (!config.disabled) {
                 }
 
                 if (!!body.tasks) {
+                    var token = tasksToken(body.tasks.map(t => t.id));
+
                     body.tasks.forEach(function(task) {
-                        if (process.id == 'russe') task.description = task.tags.map(t => `[${t}](https://ru.wiktionary.org/w/index.php?search=${t}#.D0.A0.D1.83.D1.81.D1.81.D0.BA.D0.B8.D0.B9)`).join(' и ');
+                        if (process.id == 'russe') task.description = task.tags.map(t => `[${t}](https://www.google.com/search?q=%22${t}%22)`).join(' и ');
                         task.descriptionHTML = marked(task.description);
                         task.inputType = (task.type == 'single') ? 'radio' : 'checkbox';
                         task.answers = task.answers.map(answer => {
                             return {value: answer};
                         });
+                        if (process.id == 'russe') task.answer = 0;
                     });
 
-                    res.render(process.id == 'russe' ? 'russe' : 'task', {process: process, allocation: body});
+                    res.render(process.id == 'russe' ? 'russe' : 'task', {process: process, allocation: body, token: token});
                 } else {
                     res.render('empty');
                 }
@@ -116,6 +120,9 @@ if (!config.disabled) {
             answers[task] = req.body[key] ? (Array.isArray(req.body[key]) ? req.body[key] : [req.body[key]]) : null;
         });
 
+        var token = tasksToken(tasks);
+        if (req.body.token != token) return res.redirect(`/${req.params.process}`);
+
         request.patch(`${config.apiURL}/processes/${req.params.process}/workers/${req.user.worker}/answers`, {form: {
             answers: answers,
             tags: `tasks${tasks.join('_')}`
@@ -131,16 +138,19 @@ if (!config.disabled) {
                         return res.render('empty');
                     }
 
+                    token = tasksToken(body.tasks.map(t => t.id));
+
                     body.tasks.forEach(function(task) {
-                        if (process.id == 'russe') task.description = task.tags.map(t => `[${t}](https://ru.wiktionary.org/w/index.php?search=${t}#.D0.A0.D1.83.D1.81.D1.81.D0.BA.D0.B8.D0.B9)`).join(' и ');
+                        if (process.id == 'russe') task.description = task.tags.map(t => `[${t}](https://www.google.com/search?q=%22${t}%22)`).join(' и ');
                         task.descriptionHTML = marked(task.description);
                         task.inputType = (task.type == 'single') ? 'radio' : 'checkbox';
                         task.answers = task.answers.map(answer => {
                             return {value: answer, checked: (answers[task.id.toString()] || []).indexOf(answer) !== -1};
                         });
+                        if (process.id == 'russe') task.answer = answers[task.id.toString()][0] || 0;
                     });
 
-                    res.render(process.id == 'russe' ? 'russe' : 'task', {process: process, allocation: body, errors: errors});
+                    res.render(process.id == 'russe' ? 'russe' : 'task', {process: process, allocation: body, errors: errors, token: token});
                 }).json();
             } else {
                 res.redirect('/' + req.params.process);
@@ -155,6 +165,13 @@ if (!config.disabled) {
     app.get('/', function(req, res, next) {
         res.render('disabled');
     });
+}
+
+
+function tasksToken(tasks) {
+    return crypto.createHash('sha256').
+        update(tasks.sort().join('_') + 'russe2015').
+        digest('hex');
 }
 
 var processes;
@@ -229,7 +246,7 @@ function localizeValidationErrors(errors) {
             case "task-single-no-answer":
                 return "Необходимо выбрать один из ответов.";
             case "answer-not-in-task":
-                return "Указан неверный вариант ответа.";
+                return "Указан недопустимый вариант ответа.";
             case "answer-duplicate":
                 return null;
             default:
