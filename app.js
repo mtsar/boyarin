@@ -94,7 +94,7 @@ if (!config.disabled) {
                     var token = tasksToken(body.tasks.map(t => t.id));
 
                     body.tasks.forEach(function(task) {
-                        if (process.id == 'russe') task.description = task.tags.map(t => `[${t}](https://www.google.com/search?q=%22${t}%22)`).join(' и ');
+                        if (process.id == 'russe') task.description = task.tags.map(t => `<a href="https://www.google.com/search?q=%22${t}%22" target="_blank">${t}</a>`).join(' и ');
                         task.descriptionHTML = marked(task.description);
                         task.inputType = (task.type == 'single') ? 'radio' : 'checkbox';
                         task.answers = task.answers.map(answer => {
@@ -141,7 +141,7 @@ if (!config.disabled) {
                     token = tasksToken(body.tasks.map(t => t.id));
 
                     body.tasks.forEach(function(task) {
-                        if (process.id == 'russe') task.description = task.tags.map(t => `[${t}](https://www.google.com/search?q=%22${t}%22)`).join(' и ');
+                        if (process.id == 'russe') task.description = task.tags.map(t => `<a href="https://www.google.com/search?q=%22${t}%22" target="_blank">${t}</a>`).join(' и ');
                         task.descriptionHTML = marked(task.description);
                         task.inputType = (task.type == 'single') ? 'radio' : 'checkbox';
                         task.answers = task.answers.map(answer => {
