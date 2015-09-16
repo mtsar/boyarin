@@ -48,8 +48,12 @@ function auth(req, res, next) {
                 var ip = requestIp.getClientIp(req);
                 var parser = new UAParser();
                 var browser = parser.setUA(req.headers['user-agent']).getBrowser();
-                var browserVersion = Number(browser.version.split(".", 1).toString());
-                req.user = {id: `ip${ip}_${browser.name}.${browserVersion}`};
+                if (browser.version) {
+                    var browserVersion = Number(browser.version.split(".", 1).toString());
+                    req.user = {id: `ip${ip}_${browser.name}.${browserVersion}`};
+                } else {
+                    req.user = {id: `ip${ip}_${browser.name}`};
+                }
                 next();
                 break;
         }
