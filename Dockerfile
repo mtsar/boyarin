@@ -1,4 +1,4 @@
-FROM node:4.0
+FROM node:latest
 
 RUN mkdir -p /boyarin /var/log/boyarin
 WORKDIR /boyarin
