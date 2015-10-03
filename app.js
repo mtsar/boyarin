@@ -108,6 +108,7 @@ if (!config.disabled) {
                         case 'russe':
                         case 'gsm-genus':
                         case 'gsm-species':
+                        case 'gsm-match':
                             task.answer = 0;
                             break;
                         default:
@@ -121,6 +122,7 @@ if (!config.disabled) {
                         break;
                     case 'gsm-genus':
                     case 'gsm-species':
+                    case 'gsm-match':
                         res.render('genus-species', {process: process, allocation: body, token: token})
                         break;
                     default:
@@ -174,6 +176,7 @@ if (!config.disabled) {
                         case 'russe':
                         case 'gsm-genus':
                         case 'gsm-species':
+                        case 'gsm-match':
                             task.answer = (answers[task.id.toString()] || 0)[0] || 0;
                             break;
                         default:
@@ -187,6 +190,7 @@ if (!config.disabled) {
                         break;
                     case 'gsm-genus':
                     case 'gsm-species':
+                    case 'gsm-match':
                         res.render('genus-species', {process: process, allocation: body, errors: errors, token: token})
                         break;
                     default:
