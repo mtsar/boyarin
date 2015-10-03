@@ -104,10 +104,29 @@ if (!config.disabled) {
                         task.answers = task.answers.map(answer => {
                             return {value: answer};
                         });
-                        if (process.id == 'russe') task.answer = 0;
+                        switch (process.id) {
+                        case 'russe':
+                        case 'gsm-genus':
+                        case 'gsm-species':
+                            task.answer = 0;
+                            break;
+                        default:
+                            break;
+                        }
                     });
 
-                    res.render(process.id == 'russe' ? 'russe' : 'task', {process: process, allocation: body, token: token});
+                    switch (process.id) {
+                    case 'russe':
+                        res.render('task', {process: process, allocation: body, token: token})
+                        break;
+                    case 'gsm-genus':
+                    case 'gsm-species':
+                        res.render('genus-species', {process: process, allocation: body, token: token})
+                        break;
+                    default:
+                        res.render('task', {process: process, allocation: body, token: token})
+                        break;
+                    }
                 } else {
                     res.render('empty');
                 }
@@ -151,10 +170,29 @@ if (!config.disabled) {
                         task.answers = task.answers.map(answer => {
                             return {value: answer, checked: (answers[task.id.toString()] || []).indexOf(answer) !== -1};
                         });
-                        if (process.id == 'russe') task.answer = answers[task.id.toString()][0] || 0;
+                        switch (process.id) {
+                        case 'russe':
+                        case 'gsm-genus':
+                        case 'gsm-species':
+                            task.answer = (answers[task.id.toString()] || 0)[0] || 0;
+                            break;
+                        default:
+                            break;
+                        }
                     });
 
-                    res.render(process.id == 'russe' ? 'russe' : 'task', {process: process, allocation: body, errors: errors, token: token});
+                    switch (process.id) {
+                    case 'russe':
+                        res.render('task', {process: process, allocation: body, errors: errors, token: token})
+                        break;
+                    case 'gsm-genus':
+                    case 'gsm-species':
+                        res.render('genus-species', {process: process, allocation: body, errors: errors, token: token})
+                        break;
+                    default:
+                        res.render('task', {process: process, allocation: body, errors: errors, token: token})
+                        break;
+                    }
                 }).json();
             } else {
                 res.redirect('/' + req.params.process);
