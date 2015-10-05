@@ -118,7 +118,7 @@ if (!config.disabled) {
 
                     switch (process.id) {
                     case 'russe':
-                        res.render('task', {process: process, allocation: body, token: token})
+                        res.render('russe', {process: process, allocation: body, token: token})
                         break;
                     case 'gsm-genus':
                     case 'gsm-species':
@@ -186,7 +186,7 @@ if (!config.disabled) {
 
                     switch (process.id) {
                     case 'russe':
-                        res.render('task', {process: process, allocation: body, errors: errors, token: token})
+                        res.render('russe', {process: process, allocation: body, errors: errors, token: token})
                         break;
                     case 'gsm-genus':
                     case 'gsm-species':
