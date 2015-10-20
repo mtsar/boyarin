@@ -91,7 +91,7 @@ if (!config.disabled) {
                 if (err) {
                     return next(err);
                 } else if (data.statusCode === 204) {
-                    return res.render('empty');
+                    return res.render('empty', {worker: req.user.worker});
                 }
 
                 if (!!body.tasks) {
@@ -130,7 +130,7 @@ if (!config.disabled) {
                         break;
                     }
                 } else {
-                    res.render('empty');
+                    res.render('empty', {worker: req.user.worker});
                 }
             }).json();
         });
@@ -160,7 +160,7 @@ if (!config.disabled) {
                     if (err) {
                         return next(err);
                     } else if (data.statusCode === 204) {
-                        return res.render('empty');
+                        return res.render('empty', {worker: req.user.worker});
                     }
 
                     token = tasksToken(body.tasks.map(t => t.id));
