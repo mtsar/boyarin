@@ -271,7 +271,7 @@ function findOrCreateWorker(process, tag, done) {
     var processURL = config.apiURL + '/processes/' + process;
 
     request.get(processURL + '/workers/tagged/' + encodeURIComponent(tag), function(err, data, body) {
-        if (data.statusCode === 404) {
+        if (data.statusCode === 204) {
             request.post(processURL + '/workers', {form: {tags: tag}}, function(err, data, body) {
                 try {
                     done(err, JSON.parse(body));
