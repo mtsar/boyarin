@@ -10,13 +10,13 @@
     },
     "facebook": {
         "clientID": 830595317037409,
-        "clientSecret": "4a6a629072703871f2ddec1eea51b09e",
+        "clientSecret": "",
         "callbackURL": "http://127.0.0.1:8841/auth/fbcallback",
         "enableProof": false
     },
     "vkontakte": {
         "clientID": 4976337,
-        "clientSecret": "y71GLI2tLEoBu7JGpoGg",
+        "clientSecret": "",
         "callbackURL": "http://127.0.0.1:8841/auth/vkcallback"
     }
 }
