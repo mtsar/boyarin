@@ -1,0 +1,70 @@
+<h2>Этап разметки "RUSSE"</h2>
+
+<p>В данной задаче следует считать, что слова <strong>связаны по смыслу</strong>:</p>
+<ul>
+    <li>если они являются <em>синонимами</em>, к примеру как &laquo;гиппопотам&raquo; и &laquo;бегемот&raquo;</li>
+    <li>если они обозначают <em>подобные понятия</em>, такие как &laquo;фрукт&raquo; и &laquo;яблоко&raquo; или &laquo;яблоко&raquo; и &laquo;груша&raquo;;</li>
+    <li>если слова <em>тематически связаны</em>, например слова &laquo;колесо&raquo; и &laquo;тормоз&raquo;;</li>
+    <li>если слова образуют <em>устойчивое сочетание</em>, например: &laquo;оборудование&raquo; и &laquo;монтировать&raquo;.</li>
+</ul>
+<p>Слова <strong>не связаны</strong>, если между ними нет очевидной семантической связи, например, как для слов &laquo;машина&raquo; и &laquo;огурец&raquo;.</p>
+
+<form class="pure-form" method="POST" action="/stage/{{stage.id}}">
+    <fieldset>
+        <table class="pure-table russe">
+            <thead>
+                <tr>
+                    <th class="align-center" style="width: 70%">Слова</th>
+                    <th class="align-center" style="width: 30%">Ответ</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                {{#each taskList.tasks}}
+                    <tr class="align-center">
+                        <td>
+                            <a href="https://www.google.com/search?q=%22{{{first}}}%22" target="_blank">
+                                {{first}}
+                            </a>
+                            и
+                            <a href="https://www.google.com/search?q=%22{{second}}%22" target="_blank">
+                                {{second}}
+                            </a>
+                        </td>
+                        <td>
+                            <input name="task" type="hidden" value="{{id}}"/>
+                            {{#each answers}}
+                                <label>
+                                    <input type="radio"
+                                        required 
+                                        name="answers[{{../id}}]" 
+                                        value="{{value}}"  
+                                        {{#if checked}}
+                                            checked
+                                        {{/if}} />
+                                    {{title}}
+                                </label>
+                            {{/each}}            
+                        </td>
+                    </tr>
+                {{/each}}
+            
+            </tbody>
+        </table>
+    </fieldset>
+
+    {{#if errors}}
+      {{>errors}}
+    {{/if}}      
+
+    <fieldset>
+        <button type="submit" class="pure-button pure-button-primary">
+            Отправить <i class="fa fa-arrow-right"></i>
+        </button>
+        <a href="/stage/{{stage.id}}" class="pure-button">
+            Следующее задание <i class="fa fa-repeat"></i>
+        </a>
+    </fieldset>
+</form>
+
+{{> taskRemaining}}

@@ -1,8 +1,8 @@
 {
     "disabled": false,
     "port": 8841,
-    "apiURL": "http://mtsar.eveel.ru",
-    "processes": null,
+    "apiURL": "http://192.168.99.1:8080",
+    "stages": null,
     "session": {
         "saveUninitialized": false,
         "resave": false,

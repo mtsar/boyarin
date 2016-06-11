@@ -11,3 +11,4 @@ app:
   ports:
     - "8800:8841"
   restart: always
+  

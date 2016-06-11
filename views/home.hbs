@@ -1,0 +1,33 @@
+<h2>Этапы разметки</h2>
+
+<div>
+    <p>
+        Мы сделали <a href="http://maggie.lt.informatik.tu-darmstadt.de/jobimtext/documentation/distributional-semantics/">дистрибутивный тезаурус</a> русского языка, который будет скоро доступен под свободной лицензией. Помогите оценить его качество перед публикацией и внесите свой вклад в науку!
+    </p>
+</div>
+
+<table class="pure-table pure-table-striped width-max">
+    <thead>
+        <tr>
+            <th style="width: 20%">Процесс</th>
+            <th style="width: 70%">Описание</th>
+            <th style="width: 10%">Действия</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr></tr>
+        {{#each stages}}
+            <tr>
+                <td>{{id}}</td>
+                <td>{{{description}}}</td>
+                <td>
+                    <a class="pure-button pure-button-primary select-stage" href="/stage/{{id}}">Приступить</a>
+                </td>
+            </tr>
+        {{else}}
+            <tr>
+                <td colspan="3"><i class="fa fa-info"></i>&nbsp; Нет доступных заданий.</td>
+            </tr>
+        {{/each}}
+    </tbody>
+</table>

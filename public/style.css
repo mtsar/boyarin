@@ -1,62 +1,50 @@
-#content {
+.header h1{
+  margin-bottom: 0.3em;
+}
+
+.content {
   margin: 0 auto;
+  padding: 0 0.5em 0 0.5em;
   max-width: 960px;
   color: #222;
 }
 
-.task {
-  margin: 0 auto;
+.content a:not(.pure-button) {
+  color: blue;
 }
 
-@media screen and (min-width: 48em) {
-  .task {
-    max-width: 80%;
-  }
+.content a:not(.pure-button):hover {
+  color: blueviolet;
 }
 
-.task .description {
-  line-height: 1.5;
+.content table {
+    width: 100%;
 }
 
-.logout {
-  float: right;
+.content p {
+  text-align: justify;
 }
 
-.color-facebook {
-  background-color: #3b5998;
-  color: #ffffff;
+.content label {
+  display: inline-block;
+  margin-right: 1em;
+  white-space: nowrap;
 }
 
-.color-vk {
-  background-color: #5b7fa6;
-  color: #ffffff;
+.content label:hover {
+  cursor: pointer;
 }
 
-.width-max {
-  width: 100%;
+.content .pure-button,
+.pure-form button[type=submit] {
+  margin: 0.5em;
 }
 
-.align-left {
-  text-align: left;
+.content .pure-button.select-stage {
+  margin: 0;
+  font-size: smaller;
 }
 
-.align-center {
-  text-align: center;
-}
-
-.align-right {
-  text-align: right;
-}
-
-.button-xsmall {
-  font-size: 70%;
-}
-
-.errors {
-  color: #ff0000;
-}
-
-.hint {
-  line-height: 1.5;
-  hyphens: auto;
+.fa-exclamation {
+  color: red;
 }
