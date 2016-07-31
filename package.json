@@ -1,28 +1,32 @@
 {
-  "name": "Boyarin",
+  "name": "boyarin",
   "version": "1.0.0",
-  "description": "thug life",
+  "description": "",
   "main": "app.js",
   "repository": "dustalov/boyarin",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js",
+    "debug": "set DEBUG=express:* & node app.js",
+    "test": "mocha ./test/**/*.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "body-parser": "^1.13.1",
     "express": "^4.13.0",
-    "express-handlebars": "^2.0.1",
-    "express-session": "^1.11.3",
+    "body-parser": "^1.13.1",
+    "cookie-session": "^1.2.0",
     "serve-favicon": "^2.3.0",
+    "express-handlebars": "^2.0.1",
     "marked": "^0.3.5",
-    "morgan": "^1.6.0",
-    "passport": "^0.2.2",
-    "passport-facebook": "^2.0.0",
-    "passport-vkontakte": "^0.4.0",
-    "request": "^2.58.0",
-    "request-ip": "^1.1.4",
-    "ua-parser-js": "^0.7.9",
-    "raven": "^0.8.1"
+    "request-ip": "^1.2.2",
+    "ua-parser-js": "^0.7.10",
+    "request": "^2.72.0",
+    "font-awesome": "^4.6.3",
+    "purecss": "^0.6.0"
+  },
+  "devDependencies": {
+    "expect.js": "^0.3.1",
+    "mocha": "^2.5.3",
+    "supertest": "^1.2.0"
   }
 }

@@ -1,0 +1,43 @@
+<h2>Этап разметки "{{stage.id}}"</h2>
+
+<form class="pure-form" method="POST" action="/stage/{{stage.id}}">
+    
+    {{#each taskList.tasks}}
+        <fieldset>
+            <input name="task" type="hidden" value="{{id}}"/>
+            <div class="description">{{{description}}}</div>
+
+
+            {{#each answers}}
+                <label>
+                    <input 
+                        {{#if ../multiple}}
+                            type="checkbox"
+                        {{else}}
+                            type="radio"
+                        {{/if}}
+                        name="answers[{{../id}}]" value="{{value}}" 
+                        {{#if checked}} 
+                            checked  
+                        {{/if}} />
+                    {{value}}
+                </label>
+            {{/each}}    
+        </fieldset>
+    {{/each}}
+
+    {{#if errors}}
+        {{> errors}}
+    {{/if}}
+    
+    <fieldset>
+        <button type="submit" class="pure-button pure-button-primary">
+            Отправить <i class="fa fa-arrow-right"></i>
+        </button>
+        <a href="/stage/{{stage.id}}" class="pure-button">
+            Следующее задание <i class="fa fa-repeat"></i>
+        </a>
+    </fieldset>
+</form>
+
+{{> taskRemaining}}

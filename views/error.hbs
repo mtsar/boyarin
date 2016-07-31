@@ -1,7 +1,8 @@
-<h2>Не может быть</h2>
+<h2>Ошибка</h2>
 
-<div class="pure-g">
-<div class="pure-u-1">
-  <p>Произошла ошибка.</p>
-</div>
+<div>
+    <pre>{{{error.message}}}</pre>
+    {{#if error.stack}}
+        <pre>{{{error.stack}}}</pre>
+    {{/if}}
 </div>
