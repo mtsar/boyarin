@@ -12,7 +12,11 @@ module.exports = function getHomeRouter(config, connector) {
     function homeHandler(req, res, next) {
         connector.getStages((err, stages) =>{
             if(err) return next(err);
-            
+
+            if(Array.isArray(config.stages)) {
+                stages = stages.filter((stage) => config.stages.indexOf(stage.id) >= 0);
+            }
+
             res.render('home', {stages: stages});
         });
     }

@@ -1,5 +1,6 @@
 'use strict';
 
+const NotFound = require("http-errors").NotFound;
 const utils = require("./utils");
 
 module.exports = function getStageRouter(config, connector) {
@@ -19,7 +20,7 @@ module.exports = function getStageRouter(config, connector) {
         router.get('/:stage', getStage, getWorker, createWorker, getTasks, renderTasks);
         router.post('/:stage', getStage, getWorker, sendAnswers, getTasks, renderTasks);
 
-        return router;  
+        return router;
     }
 
     function configureDisabledRouter(router) {
@@ -34,12 +35,12 @@ module.exports = function getStageRouter(config, connector) {
 
     function getStage(req, res, next) {
         if (config.stages && config.stages.indexOf(req.params.stage) === -1) {
-            return res.status(404).end();
+            return next(new NotFound("Stage is not found in config.stages"));
         }
 
         connector.getStage(req.params.stage, (err, stage) => {
             if(err) return next(err);
-            if(!stage) return next(404);
+            if(!stage) return next(new NotFound("Stage is not found in mtsar"));
 
             res.locals.stage = stage;
             next();
@@ -73,7 +74,7 @@ module.exports = function getStageRouter(config, connector) {
         const answers = res.locals.answers;
         const numberOfTasks = res.locals.stage.options.tasksPerPage || 1;
 
-        if(tasksId) { 
+        if(tasksId) {
             connector.getTasksById(stageId, workerId, tasksId, callback);
         } else {
             connector.getTasks(stageId, workerId, numberOfTasks, callback);
@@ -82,6 +83,7 @@ module.exports = function getStageRouter(config, connector) {
         function callback(err, taskList) {
             if(err) return next(err);
             res.locals.taskList = utils.prepareTasksList(taskList, answers);
+            res.locals.taskIdList = taskList.tasks.map(({id}) => id).join(',');
             next();
         }
     }
@@ -89,7 +91,7 @@ module.exports = function getStageRouter(config, connector) {
     function sendAnswers(req, res, next) {
         const getArray = (value) => Array.isArray(value) ? value: [value];
         const taskId = getArray(req.body.task);
-        
+
         const answers = {};
         taskId.forEach(function(task) {
             let answer = req.body[`answers[${task}]`];
@@ -97,8 +99,8 @@ module.exports = function getStageRouter(config, connector) {
         });
 
         if(taskId.map(Number).sort().join("_") !== req.session.token)
-            return res.redirect(303 , `./${req.params.stage}`);            
-        
+            return res.redirect(303 , `./${req.params.stage}`);
+
         let formData = { answers: answers, tags: `tasks${taskId.join('_')}` };
         connector.sendAnswers(req.params.stage, res.locals.worker.id, formData, (err, answerErrors) => {
             if(err) return next(err);
@@ -107,7 +109,7 @@ module.exports = function getStageRouter(config, connector) {
                 res.locals.answers = answers;
                 res.locals.errors = utils.localizeValidationErrors(answerErrors);
             }
-     
+
             next();
         });
     }

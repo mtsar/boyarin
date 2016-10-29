@@ -1,0 +1,65 @@
+<script>
+  // Все вызовы помещаются в масив, и выполняются асинхронно, когда прогрузится js с пивика
+  var _paq = _paq || [];
+
+  // общая настройка, также трэкинг открытия страницы
+  function piwik_common() {
+    // отслеживание пользователя по id
+    // до начала выполнения задания, и после - будут в пивике, как разные пользователи
+    _paq.push(['setUserId',
+      {{#if worker.id}}
+          '{{worker.id}}'
+      {{else}}
+          '{{worker.tag}}'
+      {{/if}}
+    ]);
+    _paq.push(['trackPageView']);
+    // отслеживание кликов по сылкам, т.к. открыть в новой вкладке
+    _paq.push(['enableLinkTracking', true]);
+    // отслеживание времени, heartbeat 15secP
+    _paq.push(['enableHeartBeatTimer', 15]);
+    _paq.push(['trackEvent', 'page', 'open']);
+  }
+
+  function piwik_unload(){
+    _paq.push(['trackEvent', 'page', 'close']);
+  }
+  
+  function sendAnswers(idList) {
+    _paq.push(['trackEvent', 'task', 'send', idList]);
+  }
+
+  function hoverAnswer(answer) {
+    _paq.push(['trackEvent', 'task', 'hover answer', answer]);
+  }
+
+  function clickAnswer(answer){
+    _paq.push(['trackEvent', 'task', 'click answer', answer]);
+  }
+
+  function hoverText(word) {
+    _paq.push(['trackEvent', 'task', 'hover task work', word])
+  }
+
+  function clickText(word) {
+    _paq.push(['trackEvent', 'task', 'click task work', word])
+  }
+
+  function skipTask(idList) {
+    _paq.push(['trackEvent', 'task', 'skip task', idList]);
+  }
+
+  piwik_common();
+  window.addEventListener('beforeunload', piwik_unload);
+</script>
+
+{{! Устройство кода интеграции: http://developer.piwik.org/guides/tracking-javascript-guide#finding-the-piwik-tracking-code}}
+<script type="text/javascript">
+  (function() {
+    var u="//{{piwik.url}}/";
+    _paq.push(['setTrackerUrl', u+'piwik.php']);
+    _paq.push(['setSiteId', '{{piwik.siteId}}']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
