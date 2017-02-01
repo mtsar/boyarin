@@ -1,12 +1,16 @@
 {
     "disabled": false,
     "port": 8841,
-    "apiURL": "http://192.168.99.1:8080",
-    "stages": null,
+    "apiURL": "http://localhost:8080",
+    "stages": ["russe"],
     "session": {
         "saveUninitialized": false,
         "resave": false,
         "secret": "1337"
+    },
+    "piwik": {
+        "url": null,
+        "siteId": null
     },
     "facebook": {
         "clientID": 830595317037409,

@@ -9,7 +9,11 @@
 </ul>
 <p>Слова <strong>не связаны</strong>, если между ними нет очевидной семантической связи, например, как для слов &laquo;машина&raquo; и &laquo;огурец&raquo;.</p>
 
-<form class="pure-form" method="POST" action="/stage/{{stage.id}}">
+<form
+    class="pure-form"
+    method="POST"
+    action="/stage/{{stage.id}}"
+    onsubmit="sendAnswers('{{taskIdList}}')">
     <fieldset>
         <table class="pure-table russe">
             <thead>
@@ -23,22 +27,31 @@
                 {{#each taskList.tasks}}
                     <tr class="align-center">
                         <td>
-                            <a href="https://www.google.com/search?q=%22{{{first}}}%22" target="_blank">
+                            <a 
+                                href="https://www.google.com/search?q=%22{{{first}}}%22"
+                                target="_blank"
+                                onmouseover="hoverText('{{first}}')"
+                                onclick="clickText('{{first}}')">
                                 {{first}}
                             </a>
                             и
-                            <a href="https://www.google.com/search?q=%22{{second}}%22" target="_blank">
+                            <a 
+                                href="https://www.google.com/search?q=%22{{second}}%22" 
+                                target="_blank"
+                                onmouseover="hoverText('{{second}}')"
+                                onclick="clickText('{{second}}')">
                                 {{second}}
                             </a>
                         </td>
                         <td>
                             <input name="task" type="hidden" value="{{id}}"/>
                             {{#each answers}}
-                                <label>
+                                <label onmouseover="hoverAnswer('russe_{{value}}')">
                                     <input type="radio"
                                         required 
                                         name="answers[{{../id}}]" 
-                                        value="{{value}}"  
+                                        value="{{value}}"
+                                        onclick="clickAnswer('russe_{{value}}')"
                                         {{#if checked}}
                                             checked
                                         {{/if}} />
@@ -61,7 +74,10 @@
         <button type="submit" class="pure-button pure-button-primary">
             Отправить <i class="fa fa-arrow-right"></i>
         </button>
-        <a href="/stage/{{stage.id}}" class="pure-button">
+        <a 
+            href="/stage/{{stage.id}}"
+            class="pure-button"
+            onclick="skipTask('{{taskIdList}}')">
             Следующее задание <i class="fa fa-repeat"></i>
         </a>
     </fieldset>

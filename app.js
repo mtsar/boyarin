@@ -10,7 +10,7 @@ if(module.parent){
 
 function startApplication() {
     let app = createApplication();
-   
+
     let port = process.env.PORT || config.port;
     app.listen(port, () => {
         console.log(`Boyarin start on port ${port} in ${process.env.NODE_ENV || 'dev'} mode`);
@@ -39,6 +39,7 @@ function setupApplication(config) {
     require('./setup/favicon')(app, config);
     require('./setup/authorization')(app, config);
     app.use(express.static(`${__dirname}/assets`));
+    require('./setup/piwik')(app, config);
 
     let homeRouter = require('./controllers/home')(config, connector);
     let stageRouter = require('./controllers/stage')(config, connector);
@@ -47,6 +48,6 @@ function setupApplication(config) {
 
     require('./setup/view-engine')(app);
     require('./setup/error-handlers')(app);
-    
-    return app;    
+
+    return app;
 }
