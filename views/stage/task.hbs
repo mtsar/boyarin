@@ -11,13 +11,13 @@
             <input name="task" type="hidden" value="{{id}}"/>
             <div
                 class="description"
-                onmouseover="hoverText('task_{{id}}')">
+                onmouseover="hoverText('{{../stage.id}}', '{{id}}', '')">
                 {{{description}}}
             </div>
 
 
             {{#each answers}}
-                <label onmouseover="hoverAnswer('{{value}}')">
+                <label onmouseover="hoverAnswer('{{../../stage.id}}', '{{../id}}', '{{value}}')">
                     <input 
                         {{#if ../multiple}}
                             type="checkbox"
@@ -25,7 +25,7 @@
                             type="radio"
                         {{/if}}
                         name="answers[{{../id}}]" value="{{value}}"
-                        onclick="clickAnswer('{{value}}')" 
+                        onclick="clickAnswer('{{../../stage.id}}', '{{../id}}', '{{value}}')" 
                         {{#if checked}} 
                             checked  
                         {{/if}} />

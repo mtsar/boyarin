@@ -30,28 +30,28 @@
                             <a 
                                 href="https://www.google.com/search?q=%22{{{first}}}%22"
                                 target="_blank"
-                                onmouseover="hoverText('{{first}}')"
-                                onclick="clickText('{{first}}')">
+                                onmouseover="hoverText('{{../stage.id}}', '{{id}}', '{{first}}')"
+                                onclick="clickText('{{../stage.id}}', '{{id}}', '{{first}}')">
                                 {{first}}
                             </a>
                             и
                             <a 
                                 href="https://www.google.com/search?q=%22{{second}}%22" 
                                 target="_blank"
-                                onmouseover="hoverText('{{second}}')"
-                                onclick="clickText('{{second}}')">
+                                onmouseover="hoverText('{{../stage.id}}', '{{id}}', '{{second}}')"
+                                onclick="clickText('{{../stage.id}}', '{{id}}', '{{second}}')">
                                 {{second}}
                             </a>
                         </td>
                         <td>
                             <input name="task" type="hidden" value="{{id}}"/>
                             {{#each answers}}
-                                <label onmouseover="hoverAnswer('russe_{{value}}')">
+                                <label onmouseover="hoverAnswer('{{../../stage.id}}', '{{../id}}', '{{value}}')">
                                     <input type="radio"
                                         required 
                                         name="answers[{{../id}}]" 
                                         value="{{value}}"
-                                        onclick="clickAnswer('russe_{{value}}')"
+                                        onclick="clickAnswer('{{../../stage.id}}', '{{../id}}', '{{value}}')"
                                         {{#if checked}}
                                             checked
                                         {{/if}} />
