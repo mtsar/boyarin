@@ -33,6 +33,10 @@
     _paq.push(['trackEvent', 'task', 'click answer', stage + '_' + id + '_' + answer]);
   }
 
+  {{!--
+    Для отслеживания наведения мыши использовать mouseenter
+    https://learn.javascript.ru/mousemove-mouseover-mouseout-mouseenter-mouseleave#события-mouseenter-и-mouseleave
+   --}}
   function hoverText(stage, id, word) {
     _paq.push(['trackEvent', 'task', 'hover task word', stage + '_' + id + '_' + word])
   }
@@ -45,6 +49,11 @@
     _paq.push(['trackEvent', 'task', 'skip task', idList]);
   }
 
+  function hoverDescription(stageId) {
+    _paq.push(['trackEvent', 'task', 'hover stage description', stageId])
+  }
+
+  
   piwik_common();
   window.addEventListener('beforeunload', piwik_unload);
 </script>
